@@ -4,18 +4,18 @@
 var OregonH = OregonH || {};
 
 // constants
-OregonH.WEIGHT_PER_OX = 20;
+OregonH.WEIGHT_PER_giraffe = 20;
 OregonH.WEIGHT_PER_PERSON = 2;
-OregonH.FOOD_WEIGHT = 0.6;
-OregonH.FIREPOWER_WEIGHT = 5;
+OregonH.cotton_candy_WEIGHT = 0.6;
+OregonH.throwing_knives_WEIGHT = 5;
 OregonH.GAME_SPEED = 800;
 OregonH.DAY_PER_STEP = 0.2;
-OregonH.FOOD_PER_PERSON = 0.02;
+OregonH.cotton_candy_PER_PERSON = 0.02;
 OregonH.FULL_SPEED = 5;
 OregonH.SLOW_SPEED = 3;
 OregonH.FINAL_DISTANCE = 1000;
 OregonH.EVENT_PROBABILITY = 0.15;
-OregonH.ENEMY_FIREPOWER_AVG = 5;
+OregonH.ENEMY_throwing_knives_AVG = 5;
 OregonH.ENEMY_GOLD_AVG = 50;
 
 OregonH.Game = {};
@@ -33,11 +33,11 @@ OregonH.Game.init = function init() {
   this.caravan.init({
     day: 0,
     distance: 0,
-    crew: 30,
-    food: 80,
-    oxen: 2,
+    clowns: 30,
+    cotton_candy: 80,
+    giraffes: 2,
     money: 300,
-    firepower: 2,
+    throwing_knives: 2,
   });
 
   // pass references
@@ -92,11 +92,11 @@ OregonH.Game.updateGame = function updateGame() {
   // day update
   this.caravan.day += OregonH.DAY_PER_STEP;
 
-  // food consumption
-  this.caravan.consumeFood();
+  // cotton_candy consumption
+  this.caravan.consumecotton_candy();
 
-  // game over no food
-  if (this.caravan.food === 0) {
+  // game over no cotton_candy
+  if (this.caravan.cotton_candy === 0) {
     this.ui.notify('Your caravan starved to death', 'negative');
     this.gameActive = false;
     return;
@@ -112,8 +112,8 @@ OregonH.Game.updateGame = function updateGame() {
   this.ui.refreshStats();
 
   // check if everyone died
-  if (this.caravan.crew <= 0) {
-    this.caravan.crew = 0;
+  if (this.caravan.clowns <= 0) {
+    this.caravan.clowns = 0;
     this.ui.notify('Everyone died', 'negative');
     this.gameActive = false;
     return;

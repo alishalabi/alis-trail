@@ -9,68 +9,68 @@ OregonH.Event.eventTypes = [
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'crew',
-    value: -3,
-    text: 'Food intoxication. Casualties: ',
+    stat: 'clowns',
+    value: -5,
+    text: 'Cotton candy has been poisoned by rivals! Casualties: ',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'crew',
+    stat: 'clowns',
     value: -4,
-    text: 'Flu outbreak. Casualties: ',
+    text: 'Juggler flu outbreak. Casualties: ',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'food',
+    stat: 'cotton_candy',
     value: -10,
-    text: 'Worm infestation. Food lost: ',
+    text: 'Bear breakout! Cotton candy stolen: ',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
     stat: 'money',
     value: -50,
-    text: 'Pick pockets steal $',
+    text: 'Angry audience asked for money back. Lost $',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'oxen',
+    stat: 'giraffes',
     value: -1,
-    text: 'Ox flu outbreak. Casualties: ',
+    text: 'Giraffe flu outbreak. Casualties: ',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'positive',
-    stat: 'food',
+    stat: 'cotton_candy',
     value: 20,
-    text: 'Found wild berries. Food added: ',
+    text: 'Cotton candy clearance sale in local town! Cotton candy added: ',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'positive',
-    stat: 'food',
+    stat: 'cotton_candy',
     value: 20,
-    text: 'Found wild berries. Food added: ',
+    text: 'Cotton candy clearance sale in local town! Cotton candy added: ',
   },
   {
     type: 'STAT-CHANGE',
     notification: 'positive',
-    stat: 'oxen',
+    stat: 'giraffes',
     value: 1,
-    text: 'Found wild oxen. New oxen: ',
+    text: 'Found wild giraffes (in the US??). New giraffes: ',
   },
   {
     type: 'SHOP',
     notification: 'neutral',
     text: 'You have found a shop',
     products: [
-      { item: 'food', qty: 20, price: 50 },
-      { item: 'oxen', qty: 1, price: 200 },
-      { item: 'firepower', qty: 2, price: 50 },
-      { item: 'crew', qty: 5, price: 80 },
+      { item: 'cotton_candy', qty: 20, price: 50 },
+      { item: 'giraffes', qty: 1, price: 200 },
+      { item: 'throwing_knives', qty: 2, price: 50 },
+      { item: 'clowns', qty: 5, price: 80 },
     ],
   },
   {
@@ -78,10 +78,10 @@ OregonH.Event.eventTypes = [
     notification: 'neutral',
     text: 'You have found a shop',
     products: [
-      { item: 'food', qty: 30, price: 50 },
-      { item: 'oxen', qty: 1, price: 200 },
-      { item: 'firepower', qty: 2, price: 20 },
-      { item: 'crew', qty: 10, price: 80 },
+      { item: 'cotton_candy', qty: 30, price: 50 },
+      { item: 'giraffes', qty: 1, price: 200 },
+      { item: 'throwing_knives', qty: 2, price: 20 },
+      { item: 'clowns', qty: 10, price: 80 },
     ],
   },
   {
@@ -89,32 +89,37 @@ OregonH.Event.eventTypes = [
     notification: 'neutral',
     text: 'Smugglers sell various goods',
     products: [
-      { item: 'food', qty: 20, price: 60 },
-      { item: 'oxen', qty: 1, price: 300 },
-      { item: 'firepower', qty: 2, price: 80 },
-      { item: 'crew', qty: 5, price: 60 },
+      { item: 'cotton_candy', qty: 20, price: 60 },
+      { item: 'giraffes', qty: 1, price: 300 },
+      { item: 'throwing_knives', qty: 2, price: 80 },
+      { item: 'clowns', qty: 5, price: 60 },
     ],
   },
   {
     type: 'ATTACK',
     notification: 'negative',
-    text: 'Bandits are attacking you',
+    text: 'Rival carnies are attacking you!',
   },
   {
     type: 'ATTACK',
     notification: 'negative',
-    text: 'Bandits are attacking you',
+    text: 'The local police are canducting a raid!',
   },
   {
     type: 'ATTACK',
     notification: 'negative',
-    text: 'Bandits are attacking you',
+    text: 'Religous fanatics are chasing you out of town!',
   },
 ];
 
+// Helper function to get random number
+function randomInt(n) {
+  return Math.floor(Math.random() * n) // Returns int between 0 and n - 1
+}
+
 OregonH.Event.generateEvent = function generateEvent() {
   // pick random one
-  const eventIndex = Math.floor(Math.random() * this.eventTypes.length);
+  const eventIndex = randomInt(this.eventTypes.length);
   const eventData = this.eventTypes[eventIndex];
 
   // events that consist in updating a stat
@@ -179,8 +184,8 @@ OregonH.Event.shopEvent = function shopEvent(eventData) {
 
 // prepare an attack event
 OregonH.Event.attackEvent = function attackEvent() {
-  const firepower = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_FIREPOWER_AVG);
+  const throwing_knives = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_throwing_knives_AVG);
   const gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
 
-  this.ui.showAttack(firepower, gold);
+  this.ui.showAttack(throwing_knives, gold);
 };

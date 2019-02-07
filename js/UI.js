@@ -14,18 +14,18 @@ OregonH.UI.notify = function notify(message, type) {
 OregonH.UI.refreshStats = function refreshStats() {
   // Destructure some objects for easy access
   const {
-    day, distance, crew, oxen, food, money, firepower, weight, capacity,
+    day, distance, clowns, giraffes, cotton_candy, money, throwing_knives, weight, capacity,
   } = this.caravan;
   const { ceil, floor } = Math;
 
   // modify the dom
   document.getElementById('stat-day').innerHTML = `${ceil(day)}`; // Math.ceil(this.caravan.day);
   document.getElementById('stat-distance').innerHTML = `${floor(distance)}`;
-  document.getElementById('stat-crew').innerHTML = `${crew}`;
-  document.getElementById('stat-oxen').innerHTML = `${oxen}`;
-  document.getElementById('stat-food').innerHTML = `${ceil(food)}`;
+  document.getElementById('stat-clowns').innerHTML = `${clowns}`;
+  document.getElementById('stat-giraffes').innerHTML = `${giraffes}`;
+  document.getElementById('stat-cotton_candy').innerHTML = `${ceil(cotton_candy)}`;
   document.getElementById('stat-money').innerHTML = `${money}`;
-  document.getElementById('stat-firepower').innerHTML = `${firepower}`;
+  document.getElementById('stat-throwing_knives').innerHTML = `${throwing_knives}`;
   document.getElementById('stat-weight').innerHTML = `${ceil(weight)}/${capacity}`;
 
   // update caravan position
@@ -33,16 +33,16 @@ OregonH.UI.refreshStats = function refreshStats() {
 };
 
 // show attack
-OregonH.UI.showAttack = function showAttack(firepower, gold) {
+OregonH.UI.showAttack = function showAttack(throwing_knives, gold) {
   const attackDiv = document.getElementById('attack');
   attackDiv.classList.remove('hidden');
 
   // keep properties
-  this.firepower = firepower;
+  this.throwing_knives = throwing_knives;
   this.gold = gold;
 
-  // show firepower
-  document.getElementById('attack-description').innerHTML = `Firepower: ${firepower}`;
+  // show throwing_knives
+  document.getElementById('attack-description').innerHTML = `throwing_knives: ${throwing_knives}`;
 
   // init once
   if (!this.attackInitiated) {
@@ -60,19 +60,19 @@ OregonH.UI.showAttack = function showAttack(firepower, gold) {
 OregonH.UI.fight = function fight() {
   // console.log('Fight!');
 
-  const { firepower, gold } = this;
+  const { throwing_knives, gold } = this;
 
-  // damage can be 0 to 2 * firepower
-  const damage = Math.ceil(Math.max(0, firepower * 2 * Math.random() - this.caravan.firepower));
+  // damage can be 0 to 2 * throwing_knives
+  const damage = Math.ceil(Math.max(0, throwing_knives * 2 * Math.random() - this.caravan.throwing_knives));
 
   // check there are survivors
-  if (damage < this.caravan.crew) {
-    this.caravan.crew -= damage;
+  if (damage < this.caravan.clowns) {
+    this.caravan.clowns -= damage;
     this.caravan.money += gold;
     this.notify(`${damage} people were killed fighting`, 'negative');
     this.notify(`Found $ ${gold}`, 'gold');
   } else {
-    this.caravan.crew = 0;
+    this.caravan.clowns = 0;
     this.notify('Everybody died in the fight', 'negative');
   }
 
@@ -85,17 +85,17 @@ OregonH.UI.fight = function fight() {
 OregonH.UI.runaway = function runaway() {
   // console.log('runway!')
 
-  const { firepower } = this;
+  const { throwing_knives } = this;
 
-  // damage can be 0 to firepower / 2
-  const damage = Math.ceil(Math.max(0, firepower * Math.random() / 2));
+  // damage can be 0 to throwing_knives / 2
+  const damage = Math.ceil(Math.max(0, throwing_knives * Math.random() / 2));
 
   // check there are survivors
-  if (damage < this.caravan.crew) {
-    this.caravan.crew -= damage;
+  if (damage < this.caravan.clowns) {
+    this.caravan.clowns -= damage;
     this.notify(`${damage} people were killed running`, 'negative');
   } else {
-    this.caravan.crew = 0;
+    this.caravan.clowns = 0;
     this.notify('Everybody died running away', 'negative');
   }
 
