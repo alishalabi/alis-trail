@@ -3,9 +3,9 @@
 // eslint-disable-next-line no-var
 var OregonH = OregonH || {};
 
-OregonH.Event = {};
+OregonH.event = new Event();
 
-OregonH.Event.eventTypes = [
+OregonH.event.eventTypes = [
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
@@ -103,7 +103,7 @@ OregonH.Event.eventTypes = [
   {
     type: 'ATTACK',
     notification: 'negative',
-    text: 'The local police are canducting a raid!',
+    text: 'The local police are conducting a raid!',
   },
   {
     type: 'ATTACK',
@@ -112,80 +112,158 @@ OregonH.Event.eventTypes = [
   },
 ];
 
+class Event() {
+  constructor() {
+
+  }
+
+  generateEvent() {
+    // pick random one
+    const eventIndex = randomInt(this.eventTypes.length);
+    const eventData = this.eventTypes[eventIndex];
+
+    // events that consist in updating a stat
+    if (eventData.type === 'STAT-CHANGE') {
+      this.stateChangeEvent(eventData);
+    } else if (eventData.type === 'SHOP') {
+      // shops
+      // pause game
+      this.game.pauseJourney();
+
+      // notify user
+      this.ui.notify(eventData.text, eventData.notification);
+
+      // prepare event
+      this.shopEvent(eventData);
+    } else if (eventData.type === 'ATTACK') {
+      // attacks
+      // pause game
+      this.game.pauseJourney();
+
+      // notify user
+      this.ui.notify(eventData.text, eventData.notification);
+
+      // prepare event
+      this.attackEvent(eventData);
+    }
+  }
+
+  stateChangeEvent(eventData){
+    if (eventData.value + OregonH.caravan.[eventData.stat] >= 0) {
+      caravan[eventData.stat] += eventData.value;
+      this.ui.notify(eventData.text + Math.abs(eventData.value), eventData.notification);
+    }
+  }
+
+  shopEvent(eventData){
+    const numProds = Math.ceil(Math.random() * 4);
+
+    // product list
+    const products = [];
+    let j;
+    let priceFactor;
+
+    for (let i = 0; i < numProds; i += 1) {
+      // random product
+      j = Math.floor(Math.random() * eventData.products.length);
+
+      // multiply price by random factor +-30%
+      priceFactor = 0.7 + 0.6 * Math.random();
+
+      products.push({
+        item: eventData.products[j].item,
+        qty: eventData.products[j].qty,
+        price: Math.round(eventData.products[j].price * priceFactor),
+      });
+    }
+
+    this.ui.showShop(products);
+  }
+
+  attackEvent(){
+    const throwing_knives = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_throwing_knives_AVG);
+    const gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
+
+    this.ui.showAttack(throwing_knives, gold);
+  }
+
+}
+
+
 // Helper function to get random number
 function randomInt(n) {
   return Math.floor(Math.random() * n) // Returns int between 0 and n - 1
 }
 
-OregonH.Event.generateEvent = function generateEvent() {
-  // pick random one
-  const eventIndex = randomInt(this.eventTypes.length);
-  const eventData = this.eventTypes[eventIndex];
+// OregonH.Event.generateEvent = function generateEvent() {
+//   // pick random one
+//   const eventIndex = randomInt(this.eventTypes.length);
+//   const eventData = this.eventTypes[eventIndex];
+//
+//   // events that consist in updating a stat
+//   if (eventData.type === 'STAT-CHANGE') {
+//     this.stateChangeEvent(eventData);
+//   } else if (eventData.type === 'SHOP') {
+//     // shops
+//     // pause game
+//     this.game.pauseJourney();
+//
+//     // notify user
+//     this.ui.notify(eventData.text, eventData.notification);
+//
+//     // prepare event
+//     this.shopEvent(eventData);
+//   } else if (eventData.type === 'ATTACK') {
+//     // attacks
+//     // pause game
+//     this.game.pauseJourney();
+//
+//     // notify user
+//     this.ui.notify(eventData.text, eventData.notification);
+//
+//     // prepare event
+//     this.attackEvent(eventData);
+//   }
+// };
 
-  // events that consist in updating a stat
-  if (eventData.type === 'STAT-CHANGE') {
-    this.stateChangeEvent(eventData);
-  } else if (eventData.type === 'SHOP') {
-    // shops
-    // pause game
-    this.game.pauseJourney();
+// OregonH.Event.stateChangeEvent = function stateChangeEvent(eventData) {
+//   // can't have negative quantities
+//   if (eventData.value + caravan[eventData.stat] >= 0) {
+//     caravan[eventData.stat] += eventData.value;
+//     this.ui.notify(eventData.text + Math.abs(eventData.value), eventData.notification);
+//   }
+// };
 
-    // notify user
-    this.ui.notify(eventData.text, eventData.notification);
-
-    // prepare event
-    this.shopEvent(eventData);
-  } else if (eventData.type === 'ATTACK') {
-    // attacks
-    // pause game
-    this.game.pauseJourney();
-
-    // notify user
-    this.ui.notify(eventData.text, eventData.notification);
-
-    // prepare event
-    this.attackEvent(eventData);
-  }
-};
-
-OregonH.Event.stateChangeEvent = function stateChangeEvent(eventData) {
-  // can't have negative quantities
-  if (eventData.value + this.caravan[eventData.stat] >= 0) {
-    this.caravan[eventData.stat] += eventData.value;
-    this.ui.notify(eventData.text + Math.abs(eventData.value), eventData.notification);
-  }
-};
-
-OregonH.Event.shopEvent = function shopEvent(eventData) {
-  // number of products for sale
-  const numProds = Math.ceil(Math.random() * 4);
-
-  // product list
-  const products = [];
-  let j;
-  let priceFactor;
-
-  for (let i = 0; i < numProds; i += 1) {
-    // random product
-    j = Math.floor(Math.random() * eventData.products.length);
-
-    // multiply price by random factor +-30%
-    priceFactor = 0.7 + 0.6 * Math.random();
-
-    products.push({
-      item: eventData.products[j].item,
-      qty: eventData.products[j].qty,
-      price: Math.round(eventData.products[j].price * priceFactor),
-    });
-  }
-
-  this.ui.showShop(products);
-};
+// OregonH.Event.shopEvent = function shopEvent(eventData) {
+//   // number of products for sale
+//   const numProds = Math.ceil(Math.random() * 4);
+//
+//   // product list
+//   const products = [];
+//   let j;
+//   let priceFactor;
+//
+//   for (let i = 0; i < numProds; i += 1) {
+//     // random product
+//     j = Math.floor(Math.random() * eventData.products.length);
+//
+//     // multiply price by random factor +-30%
+//     priceFactor = 0.7 + 0.6 * Math.random();
+//
+//     products.push({
+//       item: eventData.products[j].item,
+//       qty: eventData.products[j].qty,
+//       price: Math.round(eventData.products[j].price * priceFactor),
+//     });
+//   }
+//
+//   this.ui.showShop(products);
+// };
 
 // prepare an attack event
-OregonH.Event.attackEvent = function attackEvent() {
-  const throwing_knives = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_throwing_knives_AVG);
-  const gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
-
-  this.ui.showAttack(throwing_knives, gold);
-};
+// OregonH.Event.attackEvent = function attackEvent() {
+//   const throwing_knives = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_throwing_knives_AVG);
+//   const gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
+//
+//   this.ui.showAttack(throwing_knives, gold);
+// };
